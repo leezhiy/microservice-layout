@@ -1,0 +1,19 @@
+#!/bin/sh
+# pre-commit hook脚本
+
+# 检查golangci-lint是否可执行
+GOLANGCI_LINT_CMD=$(command -v golangci-lint)
+if [ -z "$GOLANGCI_LINT_CMD" ]; then
+  echo "错误：未找到golangci-lint，请先安装并配置golangci-lint。"
+  echo "请访问 https://golangci-lint.run/ 安装和配置golangci-lint。"
+  exit 1
+fi
+
+# 执行golangci-lint进行代码检查
+"$GOLANGCI_LINT_CMD" run
+
+# 检查golangci-lint的返回码
+if [ $? -ne 0 ]; then
+  echo "错误：代码检查未通过，请修复代码问题后重新提交。"
+  exit 1
+fi

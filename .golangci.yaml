@@ -1,0 +1,58 @@
+run:
+  # 检测到错误后不退出
+  issues-exit-code: 2
+  # 不检测测试文件
+  tests: false
+  # golang 版本
+  go: '1.22'
+linters:
+  disable-all: true
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - typecheck
+    - gosec
+    - gofmt
+    - gocyclo # 检测函数复杂度
+    - dupl # 代码重复检测
+    - errname
+    - goimports # 包导入顺序
+    - funlen
+  fast: true
+linters-settings:
+  gocyclo:
+    min-complexity: 10 # 最小函数复杂度
+  dupl:
+    threshold: 100 # 代码重复率
+  goimports:
+    local-prefixes: git.corp.doulaoban.com/backend/kratos-layout
+  funlen:
+    lines: 80 # 最大行数
+    statements: 40 # 最大语句数
+issues:
+  # 不检测的目录
+  exclude-dirs:
+    - .hooks
+    - deploy
+  # 不检测的文件
+  exclude-files:
+    - ".*\\.my\\.go$"
+    - lib/bad.go
+  exclude-generated-strict: true
+  # 只检测本次提交的问题
+  new: true
+  new-from-rev: HEAD
+  # 开启自动修复
+  fix: true
+  whole-files: true
+severity:
+  default-severity: error
+  case-sensitive: true
+  rules:
+    - linters:
+        - dupl
+      severity: info

@@ -1,0 +1,19 @@
+#!/bin/sh
+
+commit_msg_file=$1
+
+commit_msg=$(cat "$commit_msg_file")
+
+# 正则表达式匹配提交消息格式
+commit_regex='^(feat|fix|docs|style|refactor|perf|test|build)(\(.+\))?: .{1,50}$'
+
+if ! echo "$commit_msg" | grep -iqE "$commit_regex"; then
+  echo "错误：提交消息格式不符合约定式提交规范！"
+  echo "提交消息应满足以下格式："
+  echo "  <type>(<scope>): <description>"
+  echo "例如："
+  echo "  feat(样品申请): 添加用户登录功能"
+  echo
+  echo "请修改提交消息后重新提交。"
+  exit 1
+fi
