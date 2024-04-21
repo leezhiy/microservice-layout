@@ -1,0 +1,56 @@
+version: "1.0"
+services:
+  kratos:
+    container_name: kratos-layout
+    ports:
+      - "8000:8000"
+      - "9000:9000"
+    build:
+      context: .
+      dockerfile: ../build/Dockerfile
+    networks:
+      - kratos-networks
+  nacos:
+    image: nacos/nacos-server:v2.3.1
+    container_name: kratos-nacos
+    env_file:
+      - ./env/nacos.env
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: always
+    networks:
+      - kratos-networks
+  mysql:
+    container_name: kratos-mysql
+    build:
+      context: .
+      dockerfile: ./image/mysql/Dockerfile
+    image: example/mysql:8.0.30
+    env_file:
+      - ./env/mysql.env
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+    networks:
+      - kratos-networks
+  jaeger:
+    container_name: kratos-jeager
+    image: jaegertracing/all-in-one:1.16
+    ports:
+      - "16686:16686"
+      - "14268:14268"
+    networks:
+      - kratos-networks
+networks:
+  kratos-networks:
+    driver: bridge
+
+

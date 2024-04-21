@@ -1,0 +1,116 @@
+syntax = "proto3";
+package kratos.api;
+
+option go_package = "git.corp.doulaoban.com/backend/kratos-layout/internal/conf;conf";
+
+import "google/protobuf/any.proto";
+import "google/protobuf/duration.proto";
+
+
+message Bootstrap {
+  Server server = 1;
+  Data data = 2;
+  Nacos nacos = 3;
+  Logger logger = 4;
+  Sentry sentry = 5;
+  Tracer tracer = 6;
+  Auth auth = 7;
+  Security security = 8;
+}
+
+message Server {
+  message Http {
+    string network = 1;
+    string addr = 2;
+    google.protobuf.Duration timeout = 3;
+  }
+
+  message Grpc {
+    string network = 1;
+    string addr = 2;
+    google.protobuf.Duration timeout = 3;
+  }
+  string name = 1;
+  string environment = 2;
+  Http http = 3;
+  Grpc grpc = 4;
+}
+
+message Database {
+  string driver = 1;
+  string source = 2;
+  uint32 min_idle_conns = 3;
+  uint32 max_open_conns = 4;
+  string con_max_left_time = 5;
+}
+
+message Redis {
+  string addr = 1;
+  google.protobuf.Any password = 2;
+  string dial_time_out = 3;
+  string read_timeout = 4;
+  string write_timeout = 5;
+  uint32 db = 6;
+}
+
+message Kafka {
+  string addr = 1;
+  google.protobuf.Any password = 2;
+  string dial_time_out = 3;
+  string read_timeout = 4;
+  string write_timeout = 5;
+  uint32 db = 6;
+}
+
+message Data {
+  Database database = 1;
+  Redis redis = 2;
+  Kafka kafka = 3;
+}
+
+message Logger {
+  string level = 1;
+  string project = 2;
+  string endpoint = 3;
+  string logstore = 4;
+  string access_key = 5;
+  string access_secret = 6;
+}
+
+message Sentry {
+  string dsn = 1;
+  string env = 2;
+  bool debug = 3;
+}
+
+message Tracer {
+  string endpoint = 1;
+  double sampler = 2;
+}
+
+message Auth {
+  string secret = 1;
+  string issuer = 2;
+  string expire_duration = 3;
+  repeated string forget_uri = 4;
+}
+
+message Security {
+  string key = 1;
+  string iv = 2;
+}
+
+message Nacos {
+  NacosConfig discovery = 1;
+  NacosConfig configuration = 2;
+}
+
+message NacosConfig {
+  string ip = 1;
+  uint64 port = 2;
+  string extension = 3;
+  string group = 4;
+  uint64 timeout_ms = 5;
+  string username = 6;
+  string password = 7;
+}
